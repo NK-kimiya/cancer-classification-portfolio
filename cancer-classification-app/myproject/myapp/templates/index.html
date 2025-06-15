@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <h2>検査結果管理システム</h2>
+    <div id="main">
+        <a href="{% url 'doctor_login' %}" id="doctor-link">医師</a>
+        <a href="{% url 'examination_login' %}" id="laboratory-technician-link">検査技師</a>
+        <a href="{% url 'patient_list' %}" id="admin-auth-link">管理者</a>
+    </div>
+</body>
+</html>

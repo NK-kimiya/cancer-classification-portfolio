@@ -1,0 +1,31 @@
+h2 {
+    width:500px;
+    background-color: #343a40;
+    padding: 10px;
+    color: white;
+    border-radius: 30px;
+    text-align: center;
+    margin: 30px auto;
+}
+
+form {
+    display: block;
+    width: 500px;
+    margin: 5px auto;
+}
+
+form input,form select,form label {
+    display: block;
+    width: 400px;
+    margin: 3px auto;
+    height: 30px;
+}
+
+form button {
+    display: block;
+    width: 150px;
+    margin: 5px auto;
+    background-color: #343a40;
+    padding: 10px;
+    color: white;
+}

@@ -1,0 +1,47 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'doctor-list.css' %}">
+</head>
+<body>
+    <header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="logout-btn">ログアウト</button>
+</form>
+</header>
+<nav>
+  <ul>
+    <li><a href="{% url 'patient_list'%}">患者一覧</a></li>
+    <li><a href="{% url 'doctor_list'%}">医師一覧</a></li>
+    <li id="current-nav"><a href="">検査技師一覧</a></li>
+  </ul>
+</nav>
+<h2>検査技師一覧</h2>
+<div id="main">
+  <table>
+    <thead>
+        <tr>
+            <th>氏名</th>
+            <th>専門</th>
+            <th>メールアドレス</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for examination in examinations %}
+        <tr>
+            <td>{{ examination.user.username }}</td>
+            <td>{{ examination.specialty  }}</td>
+            <td>{{ examination.user.email }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<a href="{% url 'create_examination' %}" id="patient-create-link">追加</a>
+</body>
+</html>

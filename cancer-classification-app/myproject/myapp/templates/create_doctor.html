@@ -1,0 +1,33 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+    
+</body>
+</html>
+<div id="login-area">
+    <h2>医師追加</h2>
+<form method="post">
+  {% csrf_token %}
+  <label>ユーザー名:</label><br>
+  {{ form.username }}<br>
+
+  <label>パスワード:</label><br>
+  {{ form.password }}<br>
+
+  <label>メールアドレス:</label><br>
+  {{ form.email }}<br>
+
+  <label>専門分野:</label><br>
+  {{ form.specialty }}<br>
+
+  <button type="submit">登録</button>
+</form>
+</div>
+

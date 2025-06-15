@@ -1,0 +1,52 @@
+{% load static %} 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>患者詳細</title>
+    <link rel="stylesheet" href="{% static 'patient-detail.css' %}">
+</head>
+<body>
+  <header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="logout-btn">ログアウト</button>
+</form>
+</header>
+<div id="medical-records-area">
+    <h2>{{ patient.name }}様のカルテ</h2>
+    <p>カルテID: {{ patient.chart_id}}</p>
+
+    {% if role == "doctor" %}
+    <a href="{% url 'doctor_dashboard' %}">患者一覧へ</a>
+{% elif role == "admin" %}
+  <a href="{% url 'patient_list' %}">患者・医師・検査技師一覧へ</a>
+{% elif role == "examination" %}
+  <a href="{% url 'examination_dashboard' %}">患者検索へ</a>
+{% else %}
+  <p>あなたの役割が特定できません。</p>
+{% endif %}
+</div>
+ <p id="diagnosis-reasult-paragraph">最新の診断予測：{{patient.latest_prediction}}</p>
+<form method="post" enctype="multipart/form-data" action="{% url 'predict_for_patient' patient.id %}">
+  {% csrf_token %}
+  <label for="upload-image" class="file-label">ファイルを選択</label>
+  <input type="file" id="upload-image" name="image" required>
+  <button type="submit" id="prediction-btn">予測する</button>
+</form>
+
+{% if prediction %}
+  <h3 id="cancer-predict-title">最新の診断画像の予測: {{ prediction }}</h3>
+{% endif %}
+
+<div id="diagnosis-img-area">
+  <h3>診断画像</h3>
+{% for img in patient.images.all %}
+  <div style="margin-bottom: 10px;">
+    <img src="{{ img.image.url }}" width="300"><br>
+    アップロード日時：{{ img.uploaded_at }}<br>
+    予測結果：{{ img.prediction }}
+  </div>
+{% empty %}
+  <p>画像はまだアップロードされていません。</p>
+{% endfor %}
+</div>

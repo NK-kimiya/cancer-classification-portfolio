@@ -1,0 +1,92 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'doctor-dashbord.css'%}">
+    <title>Document</title>
+    <style>
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 18px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="logout-btn">ログアウト</button>
+</form>
+</header>
+    <h2>{{ doctor.user.username }} 医師の担当患者</h2>
+
+
+<!-- フィルターフォーム -->
+<form method="get" style="text-align:center; margin-bottom: 20px;">
+  <label for="prediction">進行度で絞り込む：</label>
+  <select name="latest_prediction" id="prediction">
+    <option value="">-- 全て --</option>
+    <option value="良性" {% if selected_prediction == '良性' %}selected{% endif %}>良性</option>
+    <option value="初期がん" {% if selected_prediction == '初期がん' %}selected{% endif %}>初期がん</option>
+    <option value="前がん状態" {% if selected_prediction == '前がん状態' %}selected{% endif %}>前がん状態</option>
+    <option value="進行がん" {% if selected_prediction == '進行がん' %}selected{% endif %}>進行がん</option>
+  </select>
+  <button type="submit" id="cancer-stage-fillter-btn">絞り込む</button>
+</form>
+<table border="1">
+  <tr>
+    <th>氏名</th>
+    <th>カルテID</th>
+    <th>最新の分類結果</th>
+    <th>詳細</th>
+  </tr>
+  {% for patient in patients %}
+  <tr>
+    <td>{{ patient.name }}</td>
+    <td>{{ patient.chart_id }}</td>
+    <td>{{ patient.latest_prediction|default:"未分類" }}</td>
+    <td><a href="{% url 'patient_detail' patient.pk %}">詳細</a></td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="4">担当患者がいません。</td>
+  </tr>
+  {% endfor %}
+</table>
+</body>
+</html>

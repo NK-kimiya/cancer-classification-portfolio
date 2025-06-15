@@ -1,0 +1,45 @@
+form {
+    display: block;
+    width: 500px;
+    margin: 20px auto;
+    background-color:#ffffff;
+    margin-top: 200px;
+}
+
+h2 {
+    width: 100%;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    margin: 0px;
+}
+
+form {
+    padding: 10px;
+    border-left: solid 1px #dcdcdc;
+    border-right: solid 1px #dcdcdc;
+    border-bottom: solid 1px #dcdcdc;
+}
+
+form label {
+    display: block;
+    width: 80%;
+    margin: 5px auto;
+}
+
+form input {
+    display: block;
+    width: 80%;
+    margin: 0px auto;
+    height: 20px;
+}
+
+form button {
+    display: block;
+    width: 150px;
+    margin: 5px auto;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 5px;
+}

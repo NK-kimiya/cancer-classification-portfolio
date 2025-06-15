@@ -1,0 +1,42 @@
+#login-area {
+    display: block;
+    width: 500px;
+    margin: 20px auto;
+    background-color:#ffffff;
+    margin-top: 200px;
+}
+
+#login-area h2 {
+    width: 100%;
+    background-color: #343a40;
+    padding: 10px;
+    color: white;
+    border-radius: 30px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+#login-area form {
+    padding: 10px;
+}
+#login-area form label {
+    display: block;
+    width: 80%;
+    margin: 5px auto;
+}
+#login-area form input {
+    display: block;
+    width: 80%;
+    margin: 0px auto;
+    height: 30px;
+}
+
+#login-area form button {
+    display: block;
+    width: 150px;
+    margin: 5px auto;
+    background-color:#343a40;
+    border: none;
+    color: white;
+    padding: 10px;
+}

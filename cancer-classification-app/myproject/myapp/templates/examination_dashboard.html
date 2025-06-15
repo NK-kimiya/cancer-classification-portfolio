@@ -1,0 +1,87 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'doctor-dashbord.css'%}">
+    <title>Document</title>
+    <style>
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 18px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="logout-btn">ログアウト</button>
+</form>
+</header>
+    <h2>{{ examination.user }} 技師</h2>
+</body>
+
+<form action="{% url 'examination_dashboard' %}" method="post" id="clinical_records_form">
+    {% csrf_token %}
+    <input type="text" name="clinical_records" placeholder="患者のカルテ番号を入力して下さい。">
+    <button type="submit" class="logout-btn">検索</button>
+</form>
+
+{% if patient %}
+    <table>
+        <tr>
+            <th>氏名</th>
+            <th>カルテID</th>
+            <th>最新の分類結果</th>
+            <th>詳細</th>
+        </tr>
+        <tr>
+             {% for p in patient %}
+            <td>名前：{{ p.name }}</td>
+            <td>カルテID：{{ p.chart_id }}</td>
+            <td>分類：{{ p.latest_prediction|default:"未分類" }}</td>
+            <td><a href="{% url 'patient_detail' p.pk %}">詳細</a></td>
+            {% endfor %}
+        </tr>
+       
+    </table>
+{% else %}
+  <p id="clinical_records_paragraph">正しい患者のカルテ番号を入力して下さい。</p>
+{% endif %}
+
+</html>

@@ -1,0 +1,35 @@
+h2 {
+    width: 500px;
+    margin: 5px auto;
+    background-color: #343a40;
+    padding: 10px;
+    color: white;
+    border-radius: 30px;
+    text-align: center;
+    margin-top: 200px;
+}
+
+#main {
+    width: 500px;
+    margin: 50px auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#main a {
+    display: block;
+    width:200px;
+    padding: 40px 20px;
+    color: white;
+    text-align: center;
+    font-size: 30px;
+    text-decoration: none;
+    border-radius: 7px;
+    background-color: gray;
+}
+
+#admin-auth-link {
+    width:500px!important;
+    margin-top: 5px;
+}

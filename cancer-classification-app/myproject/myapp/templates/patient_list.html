@@ -1,0 +1,89 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>患者様一覧</title>
+    <link rel="stylesheet" href="{% static 'patient-list.css' %}">
+    <style>
+      
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 18px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit" class="logout-btn">ログアウト</button>
+</form>
+</header>
+<nav>
+  <ul>
+    <li id="current-nav"><a href="">患者一覧</a></li>
+    <li><a href="{% url 'doctor_list' %}">医師一覧</a></li>
+    <li><a href="{% url 'examination_list' %}">検査技師一覧</a></li>
+  </ul>
+</nav>
+<h2>患者様一覧</h2>
+
+<div id="main">
+  <table>
+    <thead>
+        <tr>
+            <th>氏名</th>
+            <th>カルテID</th>
+            <th>最新の診断結果</th>
+            <th>詳細ページ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in patients %}
+        <tr>
+            <td>{{ p.name }} 様</td>
+            <td>{{ p.chart_id }}</td>
+            <td>{{ p.latest_prediction }}</td>
+            <td><a href="{% url 'patient_detail' p.pk %}">詳細</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<a href="{% url 'create_patient' %}" id="patient-create-link">追加</a>
+</body>
+</html>

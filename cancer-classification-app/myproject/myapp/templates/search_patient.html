@@ -1,0 +1,50 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'doctor-dashbord.css' %}">
+    <title>患者検索</title>
+    <style>
+        /* ここにあなたのCSSスタイルを記載済み */
+        /* （省略） */
+    </style>
+</head>
+<body>
+<header>
+  <form action="{% url 'logout' %}" method="post" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">ログアウト</button>
+  </form>
+</header>
+
+<h2>カルテIDで患者検索</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">検索</button>
+</form>
+
+{% if patient %}
+    <table>
+        <tr>
+            <th>名前</th>
+            <th>カルテID</th>
+            <th>最新予測</th>
+            <th>担当医</th>
+        </tr>
+        <tr>
+            <td>{{ patient.name }}</td>
+            <td>{{ patient.chart_id }}</td>
+            <td>{{ patient.latest_prediction }}</td>
+            <td>{{ patient.doctor.user.username }}</td>
+        </tr>
+    </table>
+{% elif form.is_bound %}
+    <p style="text-align: center; color: red;">患者が見つかりませんでした。</p>
+{% endif %}
+
+</body>
+</html>
