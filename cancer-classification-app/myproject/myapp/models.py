@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -19,7 +20,7 @@ class Patient(models.Model):
 
 class PatientImage(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='uploads/')
+    image = CloudinaryField('image') 
     uploaded_at = models.DateTimeField(auto_now_add=True)
     prediction = models.CharField(max_length=100, blank=True)  # ← これを追加済みか確認
 

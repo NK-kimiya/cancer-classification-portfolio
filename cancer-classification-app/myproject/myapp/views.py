@@ -1,9 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
-from .model import model, idx_to_class, device
 from PIL import Image
-import torchvision.transforms as transforms
-import torch
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Patient,PatientImage,Doctor
 from .forms import PatientForm,DoctorCreationForm,ExaminationTechnicianForm,ExaminationLoginForm,ChartIDSearchForm
@@ -11,6 +8,49 @@ from django.shortcuts import get_object_or_404
 from .forms import DoctorLoginForm,ExaminationTechnician
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseForbidden
+import os
+
+import onnxruntime as ort
+import numpy as np
+
+idx_to_class = {
+    0: "all_benign",
+    1: "all_early",
+    2: "all_pre",
+    3: "all_pro"
+}
+
+# ==============================
+# ✅ importの順番を修正（先にimport）
+# ==============================
+import onnxruntime as ort
+import numpy as np
+
+# ==============================
+# ✅ ONNXモデル読み込み
+# ==============================
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+model_path = os.path.join(BASE_DIR, "model_quantized.onnx")
+
+onnx_session = ort.InferenceSession(model_path)
+
+
+
+def preprocess(image):
+    image = image.resize((224, 224))
+    image = np.array(image).astype(np.float32) / 255.0
+    
+    # 正規化（あなたの設定に合わせる）
+    image = (image - 0.5) / 0.5
+    
+    # (H, W, C) → (C, H, W)
+    image = np.transpose(image, (2, 0, 1))
+    
+    # バッチ次元追加
+    image = np.expand_dims(image, axis=0)
+    
+    return image
 
 #2
 class_to_japanese = {
@@ -41,28 +81,18 @@ def predict_image_view(request):
         #Resize((224, 224)): 画像サイズを固定
         #ToTensor(): NumPy配列をPyTorchテンソルに変換
         #Normalize((0.5,), (0.5,)): 平均0.5、標準偏差0.5で正規化
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5,), (0.5,))
-        ])
+        
 
         #画像を前処理してテンソル化し、unsqueeze(0) で1次元追加
         #.to(device) によりCPUかGPUか自動で選択されたデバイスに転送
-        input_tensor = transform(image).unsqueeze(0).to(device)
+        input_numpy = preprocess(image)
 
         #推論時に使う
-        with torch.no_grad():
-            #学習済みモデルで画像を推論,出力は各クラスに対するスコア
-            outputs = model(input_tensor)
-            
-            #スコアが最大のインデックス（クラスID）を取得
-            #例：[0.2, 0.8, 0.1, 0.4] → index 1（一番高いクラスを予測）
-            _, predicted = torch.max(outputs, 1)
-            
-            #クラスID（整数）を、文字列のラベルに変換
-            #idx_to_class は、{0: 'all_benign', 1: 'all_early', ...} などの辞書
-            predicted_class = idx_to_class[predicted.item()]
+        outputs = onnx_session.run(None, {"input": input_numpy})
+        outputs = outputs[0]
+        
+        predicted = np.argmax(outputs, axis=1)
+        predicted_class = idx_to_class[int(predicted[0])]
 
         return JsonResponse({'result': predicted_class})
 
@@ -141,18 +171,18 @@ def predict_for_patient(request, pk):
 
         # Pillowで画像を読み込んで前処理
         image = Image.open(image_file).convert('RGB')
-        transform = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            transforms.Normalize((0.5,), (0.5,))
-        ])
-        input_tensor = transform(image).unsqueeze(0).to(device)
+        input_numpy = preprocess(image)
+        
 
         # 予測
-        with torch.no_grad():
-            outputs = model(input_tensor)
-            _, predicted = torch.max(outputs, 1)
-            predicted_class = idx_to_class[predicted.item()]
+       
+        
+        outputs = onnx_session.run(None, {"input": input_numpy})
+        outputs = outputs[0]
+        
+        
+        predicted = np.argmax(outputs, axis=1)
+        predicted_class = idx_to_class[int(predicted[0])]
         
         predicted_japanese = class_to_japanese.get(predicted_class, "不明")
 
